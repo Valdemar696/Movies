@@ -5,6 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button searchButton;
+
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movies;
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        searchButton = findViewById(R.id.searchButton);
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -41,14 +48,17 @@ public class MainActivity extends AppCompatActivity {
         movies = new ArrayList<>();
         requestQueue = Volley.newRequestQueue(this);
 
-        getMovies();
     }
 
-    private void getMovies() {
+    public void getMovies() {
 
-        String url = "http://www.omdbapi.com/?apikey=ee204b2&s=Terminator";
+        final EditText searchText =  (EditText) findViewById(R.id.searchText);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        String url = "http://www.omdbapi.com/?apikey=ee204b2&s=";
+        String input = searchText.getText().toString();
+        String fullUrl = url + input;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, fullUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -85,5 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue.add(request);
 
+    }
+
+    public void getMovies(View view) {
+        getMovies();
     }
 }
